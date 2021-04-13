@@ -405,22 +405,24 @@ void adjust_analog_stick(struct Controller *controller) {
     controller->stickY = 0;
 
     // modulate the rawStickX and rawStickY to be the new f32 values by adding/subtracting 6.
-    if (controller->rawStickX <= -6) {
-        controller->stickX = controller->rawStickX * 0.73f + 6;
-    }
 
+    //right
+    //make it 3% less intense than left
     if (controller->rawStickX >= 6) {
-        controller->stickX = controller->rawStickX * 0.73f - 6;
+        controller->stickX = controller->rawStickX * 0.69f - 3; //6 offset and 0.7 is a little too fast
     }
-
-    if (controller->rawStickY <= -6) {
-        controller->stickY = controller->rawStickY * 0.73f + 6;
+    //left
+    if (controller->rawStickX <= -6) {
+        controller->stickX = controller->rawStickX * 0.70f + 3; //6 offset and 0.7 is a little too fast
     }
-
+    //up/forward
     if (controller->rawStickY >= 6) {
-        controller->stickY = controller->rawStickY * 0.76f - 6;
+        controller->stickY = controller->rawStickY * 0.73f - 3;//6 offset and 0.72 is a little too slow
     }
-
+    //down/backwards 2x as looser as right or up
+    if (controller->rawStickY <= -20) { //-20 for dz adjustment
+        controller->stickY = controller->rawStickY * 0.66f + 3; //0.75 is good
+    }
     // calculate f32 magnitude from the center by vector length.
     controller->stickMag =
         sqrtf(controller->stickX * controller->stickX + controller->stickY * controller->stickY);
